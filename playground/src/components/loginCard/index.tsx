@@ -1,6 +1,5 @@
 "use client"
 
-import { version } from "../../../package.json"
 import { useRouter } from 'next/navigation'
 import { message } from "antd"
 import { ChangeEvent, InputHTMLAttributes, useState } from "react"
@@ -9,6 +8,9 @@ import Logo from "@/components/logo"
 import { GITHUB_URL, getRandomUserId, useAppDispatch, getRandomChannel } from "@/common"
 import { setOptions } from "@/store/reducers/global"
 import styles from "./index.module.scss"
+
+const packageJson = require("../../../package.json")
+const version = packageJson.version
 
 const LoginCard = () => {
   const dispatch = useAppDispatch()
