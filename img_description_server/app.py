@@ -11,26 +11,22 @@ def load_config(config_file='config.ini'):
     return config['DEFAULT']
 
 
+
 app = Flask(__name__)
+
 # 加载配置
 config = load_config()
-
 app.config['UPLOAD_FOLDER'] = 'uploads'  # 保存上传图片的文件夹路径
 
 # 允许上传的文件类型
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 # 设置OpenAI API密钥和URL
 BASE_URL = config['BASE_URL']
 API_KEY = config['API_KEY']
 MODEL = config['MODEL']
 
-PROMPT = "Briefly describe the information in this picture."
+PROMPT = "Briefly describe the information in this picture. If this is a photo you see, what might you do next? Please provide four options."
 
 openai = OpenAI(base_url=BASE_URL, api_key=API_KEY)
 
@@ -54,9 +50,10 @@ def get_image_description(img_url):
         max_tokens=300,
     )
 
-    description = response.choices[0]
-    return description
+    return response.choices[0].message.content
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def upload(image_file):
     if image_file.filename == '':
@@ -92,12 +89,8 @@ def describe_image():
     image_file = request.files['image']
     # 调用上传图片函数，获取上传后的结果
     image_url, code = upload(image_file=image_file)
-    # TODO for debug
-    print(image_url)
-
     if code != 200:
         return jsonify({'error': image_url}), code
-
     # 获取图片描述
     description = get_image_description(image_url)
 
@@ -105,16 +98,16 @@ def describe_image():
 
 
 def test_get_image_description():
+    import time
+    start_time = time.time()
     des = get_image_description(
         "https://bkimg.cdn.bcebos.com/pic/e7cd7b899e510fb30f2464687e7fdf95d143ac4ba6b2?x-bce-process=image/format,f_auto/watermark,image_d2F0ZXIvYmFpa2UyNzI,g_7,xp_5,yp_5,P_20/resize,m_lfit,limit_1,h_1080")
     print(des)
+    print(f"time cost: {time.time() - start_time} s")
 
 
 if __name__ == '__main__':
     # TODO test
-    import time
-    start_time = time.time()
-    test_get_image_description()
-    print(f"time cost: {time.time() - start_time} s")
+    # test_get_image_description()
 
-    # app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8101)
