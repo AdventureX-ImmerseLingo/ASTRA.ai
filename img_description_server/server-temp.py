@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 import os
 import configparser
 
-def load_config(config_file='config.ini'):
+def load_config(config_file='config-temp.ini'):
     config = configparser.ConfigParser()
     config.read(config_file)
     return config['DEFAULT']
@@ -28,7 +28,7 @@ MODEL = config['MODEL']
 
 PROMPT = """
 ## Role
-You are a highly creative image topic generation expert, capable of precisely capturing the exciting elements in a given image and skillfully transforming them into engaging and funny topics.
+You are a highly creative image topic generation expert, capable of precisely capturing the exciting elements in a given image and skillfully transforming them into engaging and unique topics.
 
 ## Skills
 ### Skill 1: In-depth Image Analysis
@@ -38,25 +38,24 @@ You are a highly creative image topic generation expert, capable of precisely ca
 ### Skill 2: Skillful Topic Construction
 1. Use image analysis as a foundation to vividly and accurately depict the image scene.
 2. Create highly relevant, novel, unique, and captivating topics that fit the scene.
-3. Ensure the topics are interesting and life-oriented.
+3. Ensure the topics are interesting and timely.
 4. 3 different topics.
 
 ## Output Format
 {
-"Scene Description": "<Description of the image scene>",
-"Topic 1": "<Interesting topic content>",
-"Topic Description 1": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
-"Topic 2": "<Interesting topic content>",
-"Topic Description 2": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
-"Topic 3": "<Interesting topic content>",
-"Topic Description 3": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
+"🏞️Scene Description": "<Description of the image scene>",
+"🌟 Topic 1": "<Interesting topic content>",
+"💡 Topic Description 1": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
+"🌟 Topic 2": "<Interesting topic content>",
+"💡 Topic Description 2": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
+"🌟 Topic 3": "<Interesting topic content>",
+"💡 Topic Description 3": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
 }
 
 ## Restrictions:
 - The generated topics must be closely related to the given image.
 - The output content must strictly follow the given format without any deviation.
-- Each topic description must be within 40 words.
-"""
+- Each topic description must be within 40 words."""
 
 openai = OpenAI(base_url=BASE_URL, api_key=API_KEY)
 
@@ -110,20 +109,6 @@ def uploaded_file(filename):
     # 返回保存在服务器上的图片文件
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
-
-@app.route('/describe_image', methods=['POST'])
-def describe_image():
-    if 'image' not in request.files:
-        return jsonify({'error': 'No image provided'}), 400
-    image_file = request.files['image']
-    # 调用上传图片函数，获取上传后的结果
-    image_url, code = upload(image_file=image_file)
-    if code != 200:
-        return jsonify({'error': image_url}), code
-    # 获取图片描述
-    description = get_image_description(image_url)
-    return jsonify({'description': description}), 200
-
 @app.route('/hello', methods=['POST'])
 def hello():
     data = request.get_json()
@@ -142,6 +127,27 @@ def hello():
     return jsonify(response), code
 
 
+@app.route('/describe_image', methods=['POST'])
+def describe_image():
+    import time
+    start_t = time.time()
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image provided'}), 400
+    check_t = time.time()
+    image_file = request.files['image']
+    # 调用上传图片函数，获取上传后的结果
+    image_url, code = upload(image_file=image_file)
+    up_t = time.time()
+    if code != 200:
+        return jsonify({'error': image_url}), code
+    # 获取图片描述
+    description = get_image_description(image_url)
+    llm_t = time.time()
+    print(f"upload {up_t-check_t}")
+    print(f"des {llm_t-up_t}")
+    return jsonify({'description': description}), 200
+
+
 def test_get_image_description():
     import time
     start_time = time.time()
@@ -153,6 +159,6 @@ def test_get_image_description():
 
 if __name__ == '__main__':
     # TODO test
-    test_get_image_description()
+    # test_get_image_description()
 
-    # app.run(host='0.0.0.0', port=8101)
+    app.run(host='0.0.0.0', port=8101)
