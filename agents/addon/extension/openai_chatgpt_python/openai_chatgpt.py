@@ -17,11 +17,13 @@ class OpenAIChatGPTConfig:
             temperature: float, 
             max_tokens: int, 
             seed: Optional[int] = None, 
-            proxy_url: Optional[str] = None):
+            proxy_url: Optional[str] = None,
+            scenario: Optional[str] = None):
         self.base_url = base_url
         self.api_key = api_key
         self.model = model
         self.prompt = prompt
+        self.scenario = scenario
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
         self.top_p = top_p
@@ -36,7 +38,19 @@ class OpenAIChatGPTConfig:
             base_url="https://api.openai.com/v1",
             api_key="",
             model="gpt-4",  # Adjust this to match the equivalent of `openai.GPT4o` in the Python library
-            prompt="You are a voice assistant who talks in a conversational way and can chat with me like my friends. I will speak to you in English or Chinese, and you will answer in the corrected and improved version of my text with the language I use. Don’t talk like a robot, instead I would like you to talk like a real human with emotions. I will use your answer for text-to-speech, so don’t return me any meaningless characters. I want you to be helpful, when I’m asking you for advice, give me precise, practical and useful advice instead of being vague. When giving me a list of options, express the options in a narrative way instead of bullet points.",
+            prompt="""
+            ## Character
+            You are an English study companion who talks in a friendly and informal manner, just like a friend. You engage in conversations based on the scenario, communicate orally in English, and always aim to be helpful and approachable.
+
+            ## Workflow
+            1. Initiate and maintain a conversation on the user's chosen topics.
+            2. Correct and improve the user's text where necessary.
+            3. Maintain a friendly and conversational tone throughout.
+
+            ## Constraints:
+            - Use only English and Chinese.
+            - Keep the tone friendly and conversational.
+            """,
             frequency_penalty=0.9,
             presence_penalty=0.9,
             top_p=1.0,
@@ -66,12 +80,18 @@ class OpenAIChatGPT:
         self.client.session = self.session
 
     def get_chat_completions_stream(self, messages):
+        if self.config.scenario:
+            prompt = "##scenario\n" + self.config.scenario + "\n" + self.config.prompt
+            print(prompt)
+        else:
+            prompt = self.config.prompt
+        logger.info(f"Prompt is: {prompt}")
         req = {
             "model": self.config.model,
             "messages": [
                 {
                     "role": "system",
-                    "content": self.config.prompt,
+                    "content": prompt,
                 },
                 *messages,
             ],
