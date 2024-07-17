@@ -36,6 +36,7 @@ PROPERTY_BASE_URL = "base_url"  # Optional
 PROPERTY_API_KEY = "api_key"  # Required
 PROPERTY_MODEL = "model"  # Optional
 PROPERTY_PROMPT = "prompt"  # Optional
+PROPERTY_SCENARIO = "scenario" # Optional
 PROPERTY_FREQUENCY_PENALTY = "frequency_penalty"  # Optional
 PROPERTY_PRESENCE_PENALTY = "presence_penalty"  # Optional
 PROPERTY_TEMPERATURE = "temperature"  # Optional
@@ -114,6 +115,13 @@ class OpenAIChatGPTExtension(Extension):
                 openai_chatgpt_config.prompt = prompt
         except Exception as err:
             logger.info(f"GetProperty optional {PROPERTY_PROMPT} error: {err}")
+
+        try:
+            scenario = rte.get_property_string(PROPERTY_SCENARIO)
+            if scenario:
+                openai_chatgpt_config.scenario = scenario
+        except Exception as err:
+            logger.info(f"GetProperty optional {PROPERTY_SCENARIO} error: {err}")
 
         try:
             frequency_penalty = rte.get_property_float(PROPERTY_FREQUENCY_PENALTY)

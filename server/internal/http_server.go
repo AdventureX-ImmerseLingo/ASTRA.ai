@@ -52,6 +52,8 @@ type StartReq struct {
 	ChannelName      string `form:"channel_name,omitempty" json:"channel_name,omitempty"`
 	RemoteStreamId   uint32 `form:"remote_stream_id,omitempty" json:"remote_stream_id,omitempty"`
 	VoiceType        string `form:"voice_type,omitempty" json:"voice_type,omitempty"`
+	Scenario         string   `form:"scenario,omitempty" json:"scenario,omitempty"`
+	Topics           []string `form:"topics,omitempty" json:"topics,omitempty"`
 }
 
 type StopReq struct {
