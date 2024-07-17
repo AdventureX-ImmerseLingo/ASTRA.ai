@@ -4,13 +4,12 @@ from flask import Flask, request, jsonify, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 import os
 import configparser
+import json
 
 def load_config(config_file='config.ini'):
     config = configparser.ConfigParser()
     config.read(config_file)
     return config['DEFAULT']
-
-
 
 app = Flask(__name__)
 
@@ -43,13 +42,21 @@ You are a highly creative image topic generation expert, capable of precisely ca
 
 ## Output Format
 {
-"Scene Description": "<Description of the image scene>",
-"Topic 1": "<Interesting topic content>",
-"Topic Description 1": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
-"Topic 2": "<Interesting topic content>",
-"Topic Description 2": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
-"Topic 3": "<Interesting topic content>",
-"Topic Description 3": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
+  "scene": "<Description of the image scene>",
+  "topics": [
+    {
+      "content": "<Interesting topic content>",
+      "description": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
+    },
+    {
+      "content": "<Interesting topic content>",
+      "description": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
+    },
+    {
+      "content": "<Interesting topic content>",
+      "description": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
+    }
+  ]
 }
 
 ## Restrictions:
@@ -60,7 +67,20 @@ You are a highly creative image topic generation expert, capable of precisely ca
 
 openai = OpenAI(base_url=BASE_URL, api_key=API_KEY)
 
-def get_image_description(img_url):
+def parser_image_description_resp(response_content):
+    """
+    解析 OpenAI 的响应
+    """
+    # 将 JSON 字符串解析为字典
+    response_dict = json.loads(response_content)
+
+    # 提取特定的字段
+    scenario = response_dict['scene']
+    topics = response_dict['topics']
+
+    return scenario, topics
+
+def request_image_description(img_url):
     response = openai.chat.completions.create(
         model=MODEL,
         messages=[
@@ -121,8 +141,12 @@ def describe_image():
     if code != 200:
         return jsonify({'error': image_url}), code
     # 获取图片描述
-    description = get_image_description(image_url)
-    return jsonify({'description': description}), 200
+    resp = request_image_description(image_url)
+    scenario, topics = parser_image_description_resp(resp)
+    return jsonify({
+        'scenario': scenario,
+        'topics': topics
+        }), 200
 
 @app.route('/hello', methods=['POST'])
 def hello():
@@ -142,17 +166,20 @@ def hello():
     return jsonify(response), code
 
 
-def test_get_image_description():
+def test_request_image_description():
     import time
     start_time = time.time()
-    des = get_image_description(
+    resp = request_image_description(
         "https://bkimg.cdn.bcebos.com/pic/e7cd7b899e510fb30f2464687e7fdf95d143ac4ba6b2?x-bce-process=image/format,f_auto/watermark,image_d2F0ZXIvYmFpa2UyNzI,g_7,xp_5,yp_5,P_20/resize,m_lfit,limit_1,h_1080")
-    print(des)
+    scenario, topics = parser_image_description_resp(resp)
+    print(f"{resp}")
+    print(f"{scenario}")
+    print(f"{topics}")
     print(f"time cost: {time.time() - start_time} s")
 
 
 if __name__ == '__main__':
     # TODO test
-    test_get_image_description()
+    # test_request_image_description()
 
-    # app.run(host='0.0.0.0', port=8101)
+    app.run(host='0.0.0.0', port=8101)
