@@ -1,0 +1,29 @@
+# 使用指定版本的 Node.js
+FROM node:18.20.2
+
+# 设置工作目录
+WORKDIR /usr/src/app
+
+# 复制 package.json 和 package-lock.json
+COPY package*.json ./
+
+# 安装全局依赖
+RUN npm install
+
+# 复制项目文件
+COPY . .
+
+# 复制并设置环境变量文件
+RUN cp ./playground/.env.example ./playground/.env
+
+# 切换到 playground 目录
+WORKDIR /usr/src/app/playground
+
+# 安装项目依赖
+RUN npm install
+
+# 暴露开发服务器端口
+EXPOSE 3000
+
+# 启动开发服务器
+CMD ["npm", "run", "dev"]
