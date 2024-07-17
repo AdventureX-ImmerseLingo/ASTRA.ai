@@ -68,7 +68,7 @@ const Setting = () => {
         throw new Error(msg)
       }
       dispatch(setAgentConnected(true))
-      message.success("Agent connected")
+      // message.success("Agent connected")
       startPing()
     }
     setLoading(false)
