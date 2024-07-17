@@ -1,4 +1,4 @@
 flask
 pillow
 openai
-# pip install -r img_description/requirements.txt
+# pip install -r requirements.txt
