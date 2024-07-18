@@ -263,7 +263,7 @@ class OpenAIChatGPTExtension(Extension):
         # Prepare memory
         if len(self.memory) > self.max_memory_length:
             self.memory.pop(0)
-        self.memory.append({"role": "user", "content": input_text})
+        self.memory.append({"role": "user", "content": input_text + "\nPlease answer in English."})
 
 
         def chat_completions_stream_worker(start_time, input_text, memory):
