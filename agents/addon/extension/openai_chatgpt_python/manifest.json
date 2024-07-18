@@ -65,6 +65,15 @@
         "property": {
           "text": {
             "type": "string"
+          },
+          "is_final": {
+            "type": "bool"
+          },
+          "stream_id": {
+            "type": "uint32"
+          },
+          "end_of_segment": {
+            "type": "bool"
           }
         }
       }

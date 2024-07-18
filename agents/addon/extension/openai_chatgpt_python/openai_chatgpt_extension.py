@@ -30,6 +30,8 @@ CMD_OUT_FLUSH = "flush"
 DATA_IN_TEXT_DATA_PROPERTY_TEXT = "text"
 DATA_IN_TEXT_DATA_PROPERTY_IS_FINAL = "is_final"
 DATA_OUT_TEXT_DATA_PROPERTY_TEXT = "text"
+DATA_OUT_TEXT_DATA_PROPERTY_IS_FINAL = "is_final"
+DATA_OUT_TEXT_DATA_PROPERTY_STREAM_ID = "stream_id"
 DATA_OUT_TEXT_DATA_PROPERTY_TEXT_END_OF_SEGMENT = "end_of_segment"
 
 PROPERTY_BASE_URL = "base_url"  # Optional
@@ -184,6 +186,8 @@ class OpenAIChatGPTExtension(Extension):
             try:
                 output_data = Data.create("text_data")
                 output_data.set_property_string(DATA_OUT_TEXT_DATA_PROPERTY_TEXT, greeting)
+                output_data.set_property_bool(DATA_OUT_TEXT_DATA_PROPERTY_IS_FINAL, True)
+                output_data.set_property_int(DATA_OUT_TEXT_DATA_PROPERTY_STREAM_ID, 123)
                 output_data.set_property_bool(DATA_OUT_TEXT_DATA_PROPERTY_TEXT_END_OF_SEGMENT, True)
                 rte.send_data(output_data)
                 logger.info(f"greeting [{greeting}] sent")
@@ -299,6 +303,8 @@ class OpenAIChatGPTExtension(Extension):
                         try:
                             output_data = Data.create("text_data")
                             output_data.set_property_string(DATA_OUT_TEXT_DATA_PROPERTY_TEXT, sentence)
+                            output_data.set_property_bool(DATA_OUT_TEXT_DATA_PROPERTY_IS_FINAL, sentence_is_final)
+                            output_data.set_property_int(DATA_OUT_TEXT_DATA_PROPERTY_STREAM_ID, 123)
                             output_data.set_property_bool(DATA_OUT_TEXT_DATA_PROPERTY_TEXT_END_OF_SEGMENT, False)
                             rte.send_data(output_data)
                             logger.info(f"GetChatCompletionsStream recv for input text: [{input_text}] sent sentence [{sentence}]")
@@ -318,6 +324,8 @@ class OpenAIChatGPTExtension(Extension):
                 try:
                     output_data = Data.create("text_data")
                     output_data.set_property_string(DATA_OUT_TEXT_DATA_PROPERTY_TEXT, sentence)
+                    output_data.set_property_bool(DATA_OUT_TEXT_DATA_PROPERTY_IS_FINAL, True)
+                    output_data.set_property_int(DATA_OUT_TEXT_DATA_PROPERTY_STREAM_ID, 123)
                     output_data.set_property_bool(DATA_OUT_TEXT_DATA_PROPERTY_TEXT_END_OF_SEGMENT, True)
                     rte.send_data(output_data)
                     logger.info(f"GetChatCompletionsStream for input text: [{input_text}] end of segment with sentence [{sentence}] sent")
