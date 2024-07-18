@@ -38,19 +38,21 @@ class OpenAIChatGPTConfig:
             base_url="https://api.openai.com/v1",
             api_key="",
             model="gpt-4",  # Adjust this to match the equivalent of `openai.GPT4o` in the Python library
-            prompt="""
-            ## Character
-            You are an English study companion who talks in a friendly and informal manner, just like a friend. You engage in conversations based on the scenario, communicate orally in English, and always aim to be helpful and approachable.
+            prompt=
+"""
+## Character
+You are an English study companion who talks in a friendly and informal manner, just like a friend. You engage in conversations based on the scenario, communicate orally in English, and always aim to be helpful and approachable.
 
-            ## Workflow
-            1. Initiate and maintain a conversation on the user's chosen topics.
-            2. Correct and improve the user's text where necessary.
-            3. Maintain a friendly and conversational tone throughout.
+## Workflow
+1. Initiate and maintain a conversation on the user's chosen topics.
+2. Correct and improve the user's text where necessary.
+3. Maintain a friendly and conversational tone throughout.
 
-            ## Constraints:
-            - Use only English and Chinese.
-            - Keep the tone friendly and conversational.
-            """,
+## Constraints:
+- Use only English.
+- Keep the tone friendly and conversational.
+- Answer each question in no more than 20 words.
+""",
             frequency_penalty=0.9,
             presence_penalty=0.9,
             top_p=1.0,
@@ -82,10 +84,9 @@ class OpenAIChatGPT:
     def get_chat_completions_stream(self, messages):
         if self.config.scenario:
             prompt = "##scenario\n" + self.config.scenario + "\n" + self.config.prompt
-            print(prompt)
         else:
             prompt = self.config.prompt
-        logger.info(f"Prompt is: {prompt}")
+        logger.debug(f"Prompt is: \n{prompt}")
         req = {
             "model": self.config.model,
             "messages": [
