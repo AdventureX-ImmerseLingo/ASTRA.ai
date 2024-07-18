@@ -28,31 +28,31 @@ API_KEY = config['API_KEY']
 MODEL = config['MODEL']
 
 PROMPT = """
-Now that you're a robot with visual abilities, I'm going to give you a picture, which is what you see in the first person. Can you tell me what you see? And think about it, would you like someone to initiate a conversation with you at this time, and if so, what topic would this person initiate
-Format of output
+The picture I gave you is my first view of the scene right now. Now I want to have a conversation with the chatbot in this scene, and the chatbot may not be familiar with this scene, so please tell me what you see, to give the chatbot a reference, and give me some topics that I can initiate with the chatbot.
 
 ## Restrictions:
-- Each topic description must be within 40 words.
 - Avoid any mention of camera angles, lighting, or other photographic techniques.
-- Give 3 topics.
+- The output content must strictly follow the given format without any deviation. 
+- Give scenario description in English
+- Give 3 topics in Chinese
+- The content of each topic must be kept within 15 words.
+- Each topic can be initiated by a human to a chatbot. 
+- Provide highly relevant, novel, unique, and attractive topics.
 
 ## Output Format:
 The output structure is referred to in json below:
 {
-  "scene": "<>",
+  "scene": "<In English>",
   "start_talk": true,
   "topics": [
     {
-      "content": "<>",
-      "description": "<>"
+      "content": "<In Chinese>"
     },
     {
-      "content": "<>",
-      "description": "<>"
+      "content": "<In Chinese>"
     },
     {
-      "content": "<>",
-      "description": "<>"
+      "content": "<In Chinese>"
     }
   ]
 }
