@@ -305,7 +305,7 @@ func (s *HttpServer) output(c *gin.Context, code *Code, data any, httpStatus ...
 }
 
 func (s *HttpServer) processManifest(req *StartReq) (manifestJsonFile string, logFile string, err error) {
-	manifestJsonFile = ManifestJsonFile
+	manifestJsonFile = s.getManifestJsonFile(req.AgoraAsrLanguage)
 	content, err := os.ReadFile(manifestJsonFile)
 	if err != nil {
 		slog.Error("handlerStart read manifest.json failed", "err", err, "manifestJsonFile", manifestJsonFile, "requestId", req.RequestId, logTag)
