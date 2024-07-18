@@ -51,7 +51,7 @@ You are an English study companion who talks in a friendly and informal manner, 
 ## Constraints:
 - Use only English.
 - Keep the tone friendly and conversational.
-- Answer each question in no more than 20 words.
+- Answer each question in no more than 15 words.
 """,
             frequency_penalty=0.9,
             presence_penalty=0.9,
