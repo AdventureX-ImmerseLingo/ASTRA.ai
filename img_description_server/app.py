@@ -151,6 +151,27 @@ def describe_image():
         'topics': topics
         }), 200
 
+@app.route('/describe_image_url', methods=['POST'])
+def describe_image_url():
+    data = request.get_json()
+    if data is None:
+        return jsonify({"error": "Invalid or missing JSON in request body"}), 400
+    
+    # 处理数据
+    image_url = data.get('image_url')
+    if not image_url:
+        error = 'No image_url provided'
+        print(f"{error}")
+        return jsonify({'error': error}), 400
+    print(f"{image_url}")
+    # 获取图片描述
+    resp = request_image_description(image_url)
+    scenario, topics = parser_image_description_resp(resp)
+    return jsonify({
+        'scenario': scenario,
+        'topics': topics
+        }), 200
+
 @app.route('/hello', methods=['POST'])
 def hello():
     data = request.get_json()
