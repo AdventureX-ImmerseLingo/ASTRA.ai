@@ -134,10 +134,13 @@ def uploaded_file(filename):
 @app.route('/describe_image', methods=['POST'])
 def describe_image():
     if 'image' not in request.files:
-        return jsonify({'error': 'No image provided'}), 400
+        error = 'No image provided'
+        print(f"{error}")
+        return jsonify({'error': error}), 400
     image_file = request.files['image']
     # 调用上传图片函数，获取上传后的结果
     image_url, code = upload(image_file=image_file)
+    print(f"{image_url}, {code}")
     if code != 200:
         return jsonify({'error': image_url}), code
     # 获取图片描述
