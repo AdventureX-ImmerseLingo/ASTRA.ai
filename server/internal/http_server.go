@@ -305,7 +305,7 @@ func (s *HttpServer) output(c *gin.Context, code *Code, data any, httpStatus ...
 }
 
 func (s *HttpServer) processManifest(req *StartReq) (manifestJsonFile string, logFile string, err error) {
-	manifestJsonFile = s.getManifestJsonFile(req.AgoraAsrLanguage)
+	manifestJsonFile = ManifestJsonFile
 	content, err := os.ReadFile(manifestJsonFile)
 	if err != nil {
 		slog.Error("handlerStart read manifest.json failed", "err", err, "manifestJsonFile", manifestJsonFile, "requestId", req.RequestId, logTag)
@@ -339,6 +339,9 @@ func (s *HttpServer) processManifest(req *StartReq) (manifestJsonFile string, lo
 	if req.RemoteStreamId != 0 {
 		manifestJson, _ = sjson.Set(manifestJson, `predefined_graphs.0.nodes.#(name=="agora_rtc").property.remote_stream_id`, req.RemoteStreamId)
 	}
+	if req.Scenario != "" {
+		manifestJson, _ = sjson.Set(manifestJson, `predefined_graphs.0.nodes.#(name=="openai_chatgpt").property.scenario`, req.Scenario)
+	}	
 
 	language := gjson.Get(manifestJson, `predefined_graphs.0.nodes.#(name=="agora_rtc").property.agora_asr_language`).String()
 

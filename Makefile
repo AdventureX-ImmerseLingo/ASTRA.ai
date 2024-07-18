@@ -25,3 +25,5 @@ run-server:
 	@echo ">> run server"
 	server/bin/api
 	@echo ">> done"
+
+redeploy-server: build-server run-server
