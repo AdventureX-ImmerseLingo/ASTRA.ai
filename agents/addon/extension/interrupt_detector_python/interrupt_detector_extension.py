@@ -82,7 +82,7 @@ class InterruptDetectorExtension(Extension):
             f"on_data {TEXT_DATA_TEXT_FIELD}: {text} {TEXT_DATA_FINAL_FIELD}: {final}"
         )
 
-        if final or len(text) >= 2:
+        if self.is_valid_interrupt(text, final):
             flush_cmd = Cmd.create(CMD_NAME_FLUSH)
             rte.send_cmd(flush_cmd, lambda rte, result: print("InterruptDetectorExtensionAddon send_cmd done"))
 
@@ -92,6 +92,11 @@ class InterruptDetectorExtension(Extension):
         d.set_property_bool(TEXT_DATA_FINAL_FIELD, final)
         d.set_property_string(TEXT_DATA_TEXT_FIELD, text)
         rte.send_data(d)
+    
+    def is_valid_interrupt(self, text, final):
+        logger.info(f"[is_valid_interrupt] text: {text}, final: {final}")
+        # return False
+        return final or len(text) >= 2
 
 @register_addon_as_extension("interrupt_detector_python")
 class InterruptDetectorExtensionAddon(Addon):
