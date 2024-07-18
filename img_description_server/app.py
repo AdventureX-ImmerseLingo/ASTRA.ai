@@ -135,12 +135,10 @@ def upload(image_file):
     else:
         return 'Invalid file type', 400
 
-
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     # 返回保存在服务器上的图片文件
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-
 
 @app.route('/describe_image', methods=['POST'])
 def describe_image():
@@ -158,6 +156,7 @@ def describe_image():
         # 获取图片描述
         resp = request_image_description(image_url)
         scenario, start_talk, topics = parser_image_description_resp(resp)
+        print(f"scenario: {scenario}, start_talk: {start_talk}, topics: {topics}")
         return jsonify({
             'scenario': scenario,
             'start_talk': start_talk,
@@ -185,6 +184,7 @@ def describe_image_url():
         # 获取图片描述
         resp = request_image_description(image_url)
         scenario, start_talk, topics = parser_image_description_resp(resp)
+        print(f"scenario: {scenario}, start_talk: {start_talk}, topics: {topics}")
         return jsonify({
             'scenario': scenario,
             'start_talk': start_talk,
