@@ -38,7 +38,7 @@ You are a highly creative image topic generation expert, capable of precisely ca
 1. Use image analysis as a foundation to vividly and accurately depict the image scene.
 2. Create highly relevant, novel, unique, and captivating topics that fit the scene.
 3. Ensure the topics are interesting and life-oriented.
-4. 3 different topics.
+4. Generate 3 different topics.
 
 ## Output Format
 {
@@ -63,6 +63,7 @@ You are a highly creative image topic generation expert, capable of precisely ca
 - The generated topics must be closely related to the given image.
 - The output content must strictly follow the given format without any deviation.
 - Each topic description must be within 40 words.
+- Avoid any mention of camera angles, lighting, or other photographic techniques.
 """
 
 openai = OpenAI(base_url=BASE_URL, api_key=API_KEY)
