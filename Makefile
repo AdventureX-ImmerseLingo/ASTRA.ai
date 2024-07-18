@@ -27,3 +27,13 @@ run-server:
 	@echo ">> done"
 
 redeploy-server: build-server run-server
+
+run-agents:
+	@echo ">> run agents"
+	./agents/bin/start
+	@echo ">> done"
+
+run-img-des-server:
+	@echo ">> run img_description_server"
+	cd img_description_server && python3 app.py
+	@echo ">> done"
