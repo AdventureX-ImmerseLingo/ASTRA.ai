@@ -28,44 +28,34 @@ API_KEY = config['API_KEY']
 MODEL = config['MODEL']
 
 PROMPT = """
-## Role
-You are a highly creative image topic generation expert, capable of precisely capturing the exciting elements in a given image and skillfully transforming them into engaging and funny topics.
+Now that you're a robot with visual abilities, I'm going to give you a picture, which is what you see in the first person. Can you tell me what you see? And think about it, would you like someone to initiate a conversation with you at this time, and if so, what topic would this person initiate
+Format of output
 
-## Skills
-### Skill 1: In-depth Image Analysis
-1. Thoroughly and meticulously observe elements such as characters, item details, and scene setups in the image.
-2. Keenly perceive the intrinsic connections between elements and the potential storylines.
+## Restrictions:
+- Each topic description must be within 40 words.
+- Avoid any mention of camera angles, lighting, or other photographic techniques.
+- Give 3 topics.
 
-### Skill 2: Skillful Topic Construction
-1. Use image analysis as a foundation to vividly and accurately depict the image scene.
-2. Create highly relevant, novel, unique, and captivating topics that fit the scene.
-3. Ensure the topics are interesting and life-oriented.
-4. Generate 3 different topics.
-
-## Output Format
+## Output Format:
+The output structure is referred to in json below:
 {
-  "scene": "<Description of the image scene>",
+  "scene": "<>",
+  "start_talk": true,
   "topics": [
     {
-      "content": "<Interesting topic content>",
-      "description": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
+      "content": "<>",
+      "description": "<>"
     },
     {
-      "content": "<Interesting topic content>",
-      "description": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
+      "content": "<>",
+      "description": "<>"
     },
     {
-      "content": "<Interesting topic content>",
-      "description": "<Expand the topic with questions or descriptions, explaining its interesting aspects and potential discussion directions>"
+      "content": "<>",
+      "description": "<>"
     }
   ]
 }
-
-## Restrictions:
-- The generated topics must be closely related to the given image.
-- The output content must strictly follow the given format without any deviation.
-- Each topic description must be within 40 words.
-- Avoid any mention of camera angles, lighting, or other photographic techniques.
 """
 
 openai = OpenAI(base_url=BASE_URL, api_key=API_KEY)
@@ -79,9 +69,10 @@ def parser_image_description_resp(response_content):
 
     # 提取特定的字段
     scenario = response_dict['scene']
+    start_talk = response_dict['start_talk']
     topics = response_dict['topics']
 
-    return scenario, topics
+    return scenario, start_talk, topics
 
 def request_image_description(img_url):
     response = openai.chat.completions.create(
@@ -163,13 +154,19 @@ def describe_image():
     print(f"{image_url}, {code}")
     if code != 200:
         return jsonify({'error': image_url}), code
-    # 获取图片描述
-    resp = request_image_description(image_url)
-    scenario, topics = parser_image_description_resp(resp)
-    return jsonify({
-        'scenario': scenario,
-        'topics': topics
-        }), 200
+    try:
+        # 获取图片描述
+        resp = request_image_description(image_url)
+        scenario, start_talk, topics = parser_image_description_resp(resp)
+        return jsonify({
+            'scenario': scenario,
+            'start_talk': start_talk,
+            'topics': topics
+            }), 200
+    except Exception as e:
+        return jsonify({
+            'error': e
+        }), 400
 
 @app.route('/describe_image_url', methods=['POST'])
 def describe_image_url():
@@ -184,13 +181,19 @@ def describe_image_url():
         print(f"{error}")
         return jsonify({'error': error}), 400
     print(f"{image_url}")
-    # 获取图片描述
-    resp = request_image_description(image_url)
-    scenario, topics = parser_image_description_resp(resp)
-    return jsonify({
-        'scenario': scenario,
-        'topics': topics
-        }), 200
+    try:
+        # 获取图片描述
+        resp = request_image_description(image_url)
+        scenario, start_talk, topics = parser_image_description_resp(resp)
+        return jsonify({
+            'scenario': scenario,
+            'start_talk': start_talk,
+            'topics': topics
+            }), 200
+    except Exception as e:
+        return jsonify({
+            'error': e
+        }), 400
 
 @app.route('/hello', methods=['POST'])
 def hello():
