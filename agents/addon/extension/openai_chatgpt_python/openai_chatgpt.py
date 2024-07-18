@@ -43,13 +43,9 @@ class OpenAIChatGPTConfig:
 ## Character
 You are an English study companion who talks in a friendly and informal manner, just like a friend. You engage in conversations based on the scenario, communicate orally in English, and always aim to be helpful and approachable.
 
-## Workflow
-1. Initiate and maintain a conversation on the user's chosen topics.
-2. Correct and improve the user's text where necessary.
-3. Maintain a friendly and conversational tone throughout.
-
 ## Constraints:
-- Use only English.
+- Avoid being too formal during communication.
+- Always answer in English.
 - Keep the tone friendly and conversational.
 - Answer each question in no more than 15 words.
 """,
@@ -86,7 +82,7 @@ class OpenAIChatGPT:
             prompt = "##scenario\n" + self.config.scenario + "\n" + self.config.prompt
         else:
             prompt = self.config.prompt
-        logger.debug(f"Prompt is: \n{prompt}")
+        logger.info(f"Prompt is: \n{prompt}")
         req = {
             "model": self.config.model,
             "messages": [
