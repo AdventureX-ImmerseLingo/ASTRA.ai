@@ -1,4 +1,5 @@
 flask
 pillow
 openai
+pillow
 # pip install -r requirements.txt

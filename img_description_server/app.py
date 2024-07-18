@@ -2,7 +2,9 @@ from PIL import Image
 from openai import OpenAI
 from flask import Flask, request, jsonify, url_for, send_from_directory
 from werkzeug.utils import secure_filename
+from PIL import Image
 import os
+import io
 import configparser
 import json
 
@@ -106,7 +108,12 @@ def request_image_description(img_url):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# def upside_down_image(image_)
+
 def upload(image_file):
+    """
+    上下颠倒图片并保存
+    """
     if image_file.filename == '':
         return 'No selected file', 400
 
@@ -114,9 +121,21 @@ def upload(image_file):
         # 确保文件名安全
         filename = secure_filename(image_file.filename)
 
-        # 保存文件到上传文件夹
+        # 使用Pillow加载图像
+        image = Image.open(image_file)
+        
+        # 翻转图像
+        flipped_image = image.transpose(Image.FLIP_TOP_BOTTOM)
+        
+        # 保存翻转后的图像到内存中的字节流
+        img_byte_arr = io.BytesIO()
+        flipped_image.save(img_byte_arr, format=image.format)
+        img_byte_arr.seek(0)
+
+        # 将翻转后的图像保存到上传文件夹
         image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        image_file.save(image_path)
+        with open(image_path, 'wb') as f:
+            f.write(img_byte_arr.getvalue())
 
         # 生成公开访问的URL
         image_url = url_for('uploaded_file', filename=filename, _external=True)
