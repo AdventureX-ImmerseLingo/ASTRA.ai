@@ -1,3 +1,39 @@
+# Interesting 英吹思听
+
+## 一句话介绍我们的项目
+
+带上 rokid，即刻拥有一位形影不离的外籍朋友带你学英语
+
+## 想法来源
+
+我们在思考一个问题：为什么大家接受了长达十几年的英语教育，但是英文水平一直都很难达到可用的状态？
+
+为什么我们能如此熟悉母语，但是掌握一门外语却是很多人一辈子都无法做到的事情。
+
+我们给的答案是：掌握一门语言最好的方法是使用一门语言。大家最需要的是在现实生活中真的能把语言给用起来。
+
+我们缺的就是这样一个懂外语的好朋友，在生活中不断给我们输入英文，让我们知道语言是可以怎么被使用的。
+
+以前我们往往会想有没有什么样的 APP 可以达到这样的效果，但是我们觉得语言学习工具的终局其实是把 AI 和智能硬件做结合，这会颠覆现在所有语言学习工具。
+
+我们在想象，在 XR 技术和 LLM ready 那一天，这个语言工具会是怎样的。
+
+## 功能介绍
+
+用户可以使用中文和 Rokid交流（当然你想说英语也是可以的），Rokid 会参考上下文和摄像头的信息用英文回复，并且将英文流式输出在眼镜的显示屏中。
+
+通过在生活场景中的英文交流，让用户输入大量英文来掌握英语
+
+## 技术介绍
+
+客户端我们使用Unity Android结合Rokid SDK开发 Rokid AR应用。代码仓库见![Unity plastichub](https://plastichub.unity.cn/chunyu-hong/Test)
+
+Agent侧，我们使用python在Astra项目的基础上进行二次开发，其中，使用Agora RTC进行实时音频流的交换，以支持连续的实时语音聊天；使用OpenAI 的gpt4o模型，通过OpenDev 提供的token进行访问，实现了Chatbot的内容生成；使用Azure TTS进行文本转语音；为了支持对话中对场景的识别，我们通过Rokid 相关SKD调用AR设备的摄像头，将捕获的图片数据交由阶跃星辰的图片大模型进行识别，生成场景描述。由此构建了一个完整的支持识别用户场景并进行无缝实时聊天的AI Agent。具体代码见 ![python-experimental-databuf分支](- https://github.com/AdventureX-ImmerseLingo/ASTRA.ai/tree/python-experimental-databuf)
+
+---
+
+以下为ASTRA官方README内容
+
 ![ASTRA Banner Image](https://github.com/rte-design/ASTRA.ai/raw/main/images/banner-image-without-tagline.png)
 
 <div align="center">
