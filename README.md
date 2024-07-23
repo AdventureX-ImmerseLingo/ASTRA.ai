@@ -26,9 +26,9 @@
 
 ## 技术介绍
 
-客户端我们使用Unity Android结合Rokid SDK开发 Rokid AR应用。代码仓库见![Unity plastichub](https://plastichub.unity.cn/chunyu-hong/Test)
+客户端我们使用Unity Android结合Rokid SDK开发 Rokid AR应用。代码仓库见[Unity plastichub](https://plastichub.unity.cn/chunyu-hong/Test)
 
-Agent侧，我们使用python在Astra项目的基础上进行二次开发，其中，使用Agora RTC进行实时音频流的交换，以支持连续的实时语音聊天；使用OpenAI 的gpt4o模型，通过OpenDev 提供的token进行访问，实现了Chatbot的内容生成；使用Azure TTS进行文本转语音；为了支持对话中对场景的识别，我们通过Rokid 相关SKD调用AR设备的摄像头，将捕获的图片数据交由阶跃星辰的图片大模型进行识别，生成场景描述。由此构建了一个完整的支持识别用户场景并进行无缝实时聊天的AI Agent。具体代码见 ![python-experimental-databuf分支](- https://github.com/AdventureX-ImmerseLingo/ASTRA.ai/tree/python-experimental-databuf)
+Agent侧，我们使用python在Astra项目的基础上进行二次开发，其中，使用Agora RTC进行实时音频流的交换，以支持连续的实时语音聊天；使用OpenAI 的gpt4o模型，通过OpenDev 提供的token进行访问，实现了Chatbot的内容生成；使用Azure TTS进行文本转语音；为了支持对话中对场景的识别，我们通过Rokid 相关SKD调用AR设备的摄像头，将捕获的图片数据交由阶跃星辰的图片大模型进行识别，生成场景描述。由此构建了一个完整的支持识别用户场景并进行无缝实时聊天的AI Agent。具体代码见[python-experimental-databuf分支](https://github.com/AdventureX-ImmerseLingo/ASTRA.ai/tree/python-experimental-databuf)
 
 ---
 
